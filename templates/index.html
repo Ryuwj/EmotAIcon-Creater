@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>태그 추출기</title>
+</head>
+<body>
+    <h2>문장에서 태그 추출하기</h2>
+    <form method="post">
+        <textarea name="text" rows="4" cols="50"></textarea>
+        <br>
+        <input type="submit" value="태그 추출">
+    </form>
+    {% if translated %}
+    <h3>추출된 태그:</h3>
+    <p>{{ translated }}</p>
+    {% endif %}
+</body>
+</html>
