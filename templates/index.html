@@ -1,18 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>태그 추출기</title>
+    <meta charset="UTF-8">
+    <title>이모티콘 이미지 생성기</title>
 </head>
 <body>
-    <h2>문장에서 태그 추출하기</h2>
-    <form method="post">
-        <textarea name="text" rows="4" cols="50"></textarea>
-        <br>
-        <input type="submit" value="태그 추출">
+    <form action="/" method="post">
+        <textarea name="text" placeholder="한국어 문장을 입력하세요..."></textarea>
+        <button type="submit">번역하고 생성하기</button>
     </form>
-    {% if translated %}
-    <h3>추출된 태그:</h3>
-    <p>{{ translated }}</p>
+    {% if image_path %}
+        <div>
+            <!-- 이미지 파일 경로를 사용하여 이미지 표시 -->
+            <img src="{{ image_path }}" alt="생성된 이미지" />
+        </div>
+        <form action="/regenerate" method="post">
+            <input type="hidden" name="prompt" value="{{ prompt }}">
+            <button type="submit">재생성</button>
+        </form>
+        <form action="/download" method="post">
+            <input type="hidden" name="prompt" value="{{ prompt }}">
+            <button type="submit">다운로드</button>
+        </form>
     {% endif %}
 </body>
 </html>
