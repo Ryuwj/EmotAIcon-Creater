@@ -5,6 +5,7 @@ import os
 import base64
 import json
 import io
+import hashlib
 from PIL import Image
 from dotenv import load_dotenv
 from datetime import datetime
@@ -109,8 +110,15 @@ def generate_image(prompt):
         
     image_data = Image.open(io.BytesIO(base64.b64decode(response_json['images'][0])))
     
+    # 현재 날짜와 시간으로 파일 이름 해시 생성
+    current_time = datetime.now().strftime("%Y%m%d-%H%M%S")
+    hashed_name = hashlib.sha256(current_time.encode()).hexdigest()
+    filename = f"{hashed_name}.png"
+    
+    folder_path = create_folder_for_today('static/images')
+    
     # 이미지 파일 저장
-    image_path = os.path.join('static/images', 'output.png')
+    image_path = os.path.join(folder_path, filename)
     image_data.save(image_path)
     
     return image_path
@@ -131,6 +139,17 @@ def download():
     directory = os.path.join(app.root_path, image_path)
     
     return send_file(directory, as_attachment=True)
+
+def create_folder_for_today(base_dir):
+    # 오늘 날짜로 폴더 이름 생성
+    today = datetime.now().strftime("%Y%m%d")
+    folder_path = os.path.join(base_dir, today)
+
+    # 폴더가 존재하지 않으면 생성
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+    
+    return folder_path
 
 if __name__ == '__main__':
     app.run(debug=True)
