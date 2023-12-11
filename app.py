@@ -51,6 +51,9 @@ def index():
 
 def translate_to_english(text):
     try:
+        
+        print("user input : " + text)
+        
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
@@ -82,7 +85,11 @@ def translate_to_english(text):
             presence_penalty=0
         )
         # 챗 API의 최신 버전에서는 'message' 키를 이렇게 접근합니다.
-        return response.choices[0].message.content
+        answer = response.choices[0].message.content
+        
+        print("OpenAI API answer : " + answer)
+        
+        return answer
     except Exception as e:
         return str(e)
 
@@ -113,21 +120,17 @@ def regenerate():
     prompt = request.form['prompt']
     #image_data = generate_image(prompt)
     #image_b64 = base64.b64encode(image_data).decode('utf-8')
-    response = generate_image(translate_to_english)
-    response_json = response.json()
-        
-    image_data = Image.open(io.BytesIO(base64.b64decode(response_json['images'][0])))
+    image_path = generate_image(prompt)
     
-    return render_template('index.html', image_data=image_data, prompt=prompt)
+    return render_template('index.html', image_path=image_path, prompt=prompt)
 
 @app.route('/download', methods=['POST'])
 def download():
-    prompt = request.form['prompt']
-    image_data = generate_image(prompt)
-    filename = 'generated_image.png'
-    with open(filename, 'wb') as f:
-        f.write(image_data)
-    return send_file(filename, as_attachment=True)
+    image_path = request.form['image_path']
+    
+    directory = os.path.join(app.root_path, image_path)
+    
+    return send_file(directory, as_attachment=True)
 
 if __name__ == '__main__':
     app.run(debug=True)
