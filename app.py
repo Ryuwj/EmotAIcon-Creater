@@ -9,7 +9,7 @@ from PIL import Image
 from dotenv import load_dotenv
 from datetime import datetime
 
-app = Flask(__name__)
+
 # .env 파일의 내용을 수동으로 로드
 with open('environment.env', 'r') as file:
     for line in file:
@@ -20,8 +20,14 @@ with open('environment.env', 'r') as file:
 # 이제 환경 변수 사용
 api_key = os.getenv('OPENAI_API_KEY')
 
+print("api_key : " + api_key)
+
+
+
+app = Flask(__name__)
 load_dotenv()
 client = OpenAI(api_key=api_key)
+
 
 STABLE_DIFFUSION_API_URL = "http://localhost:7860"  # 실제 로컬 API 엔드포인트로 교체하세요.
 
@@ -45,7 +51,7 @@ def index():
 
 def translate_to_english(text):
     try:
-        response = OpenAI.Completion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {
@@ -76,7 +82,7 @@ def translate_to_english(text):
             presence_penalty=0
         )
         # 챗 API의 최신 버전에서는 'message' 키를 이렇게 접근합니다.
-        return response['choices'][0]['message']['content']
+        return response.choices[0].message.content
     except Exception as e:
         return str(e)
 
