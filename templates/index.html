@@ -3,29 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <title>이모티콘 이미지 생성기</title>
+    <link rel="stylesheet" href="static/css/style.css"
 </head>
 <body>
-    <form action="/" method="post">
-        <textarea name="text" placeholder="한국어 문장을 입력하세요..."></textarea>
-        <button type="submit">번역하고 생성하기</button>
-    </form>
-    {% if image_path %}
-        <div>
-            <!-- 이미지 파일 경로를 사용하여 이미지 표시 -->
-            <img src="{{ image_path }}" alt="생성된 이미지" />
+    <div class="container">
+        <div class="form-group">
+            <form action="/" method="post">
+                <textarea name="text" placeholder="한국어 문장을 입력하세요..."></textarea>
+                <button type="submit">번역하고 생성하기</button>
+            </form>
         </div>
-        <form action="/regenerate" method="post">
-            <input type="hidden" name="prompt" value="{{ prompt }}">
+        {% if image_path %}
+        <div class="form-group">
+            <div>
+                <!-- 이미지 파일 경로를 사용하여 이미지 표시 -->
+                <img src="{{ image_path }}" alt="생성된 이미지" />
+            </div>
+            <form action="/regenerate" method="post">
+                <input type="hidden" name="prompt" value="{{ prompt }}">
 
-            <!-- 나중에 삭제할 요소 -->
-            <input type="text" name="prompt" value="{{prompt}}" readonly><br>
+                <!-- 나중에 삭제할 요소 -->
+                <input type="text" name="prompt" value="{{prompt}}" readonly><br>
 
-            <button type="submit">재생성</button>
-        </form>
-        <form action="/download" method="post">
-            <input type="hidden" name="image_path" value="{{ image_path }}">
-            <button type="submit">다운로드</button>
-        </form>
-    {% endif %}
+                <button type="submit">재생성</button>
+            </form>
+            <form action="/download" method="post">
+                <input type="hidden" name="image_path" value="{{ image_path }}">
+                <button type="submit">다운로드</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
 </body>
 </html>
