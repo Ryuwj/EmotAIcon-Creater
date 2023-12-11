@@ -37,7 +37,7 @@ def index():
         # 이미지가 저장된 경로 지정
         image_path = generate_image(translated_prompt)
         
-        
+        print("translated_prompt : " + translated_prompt)
         
         # image_b64 = base64.b64encode(image_data).decode('utf-8')
         return render_template('index.html', image_path=image_path, prompt=translated_prompt)
@@ -45,29 +45,29 @@ def index():
 
 def translate_to_english(text):
     try:
-        response = client.ChatCompletion.create(
+        response = OpenAI.Completion.create(
             model="gpt-3.5-turbo",
             messages=[
                 {
-                        "role": "system",
-                        "content": ("This assistant will translate Korean sentences into English for creating emoji images with AI art generators.\n"
-                                    "For each Korean sentence, provide the English translation. For example, translate descriptions of characters, scenes, or actions.")
-                    },
-                    # few-shot 학습 예제
-                    {
-                        "role": "user",
-                        "content": "명일방주의 아미야가 옥상에서 손 흔들고 있는 이미지"
-                    },
-                    {
-                        "role": "assistant",
-                        "content": "An image of Amiya from Arknights waving her hand on the rooftop."
-                    },
-                    # 추가적인 few-shot 학습 예제들 (필요한 경우 여기에 추가)
-                    # 사용자 입력
-                    {
-                        "role": "user",
-                        "content": text
-                    }
+                    "role": "system",
+                    "content": ("This assistant will translate Korean sentences into English for creating emoji images with AI art generators.\n"
+                                "For each Korean sentence, provide the English translation. For example, translate descriptions of characters, scenes, or actions.")
+                },
+                # few-shot 학습 예제
+                {
+                    "role": "user",
+                    "content": "명일방주의 아미야가 옥상에서 손 흔들고 있는 이미지"
+                },
+                {
+                    "role": "assistant",
+                    "content": "An image of Amiya from Arknights waving her hand on the rooftop."
+                },
+                # 추가적인 few-shot 학습 예제들 (필요한 경우 여기에 추가)
+                # 사용자 입력
+                {
+                    "role": "user",
+                    "content": text
+                }
             ],
             temperature=1,
             max_tokens=60,
@@ -75,9 +75,11 @@ def translate_to_english(text):
             frequency_penalty=0,
             presence_penalty=0
         )
-        return response.choices[0].message.content
+        # 챗 API의 최신 버전에서는 'message' 키를 이렇게 접근합니다.
+        return response['choices'][0]['message']['content']
     except Exception as e:
         return str(e)
+
 
 def generate_image(prompt):
     
