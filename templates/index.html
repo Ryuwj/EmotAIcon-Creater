@@ -7,12 +7,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="form-group">
-            <form action="/" method="post">
-                <textarea name="text" placeholder="한국어 문장을 입력하세요..."></textarea>
-                <button type="submit">번역하고 생성하기</button>
-            </form>
-        </div>
+        
         {% if image_path %}
         <div class="form-group">
             <div>
@@ -23,13 +18,20 @@
                 <input type="hidden" name="prompt" value="{{ prompt }}">
 
                 <!-- 나중에 삭제할 요소 -->
-                <input type="text" name="prompt" value="{{prompt}}" readonly><br>
+                <!--input type="text" name="prompt" value="{{prompt}}" readonly--><br>
 
                 <button type="submit">재생성</button>
             </form>
             <form action="/download" method="post">
                 <input type="hidden" name="image_path" value="{{ image_path }}">
                 <button type="submit">다운로드</button>
+            </form>
+        </div>
+        {% else %}
+        <div class="form-group">
+            <form action="/" method="post">
+                <textarea rows="5" cols="50" name="text" placeholder="한국어 문장을 입력하세요..."></textarea><br>
+                <button type="submit">번역하고 생성하기</button>
             </form>
         </div>
         {% endif %}

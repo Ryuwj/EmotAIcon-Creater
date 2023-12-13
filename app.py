@@ -42,6 +42,7 @@ def index():
         # 현재 시간을 문자열로 포맷팅
         
         # 이미지가 저장된 경로 지정
+        set_sd_options()
         image_path = generate_image(translated_prompt)
         
         print("translated_prompt : " + translated_prompt)
@@ -73,6 +74,16 @@ def translate_to_english(text):
                     "content": "An image of Amiya from Arknights waving her hand on the rooftop."
                 },
                 # 추가적인 few-shot 학습 예제들 (필요한 경우 여기에 추가)
+                
+                {
+                    "role": "user",
+                    "content": "카카오의 라이언이 춤추는 이모티콘"
+                 },
+                {
+                    "role":"assistant",
+                    "content":"Kakao's Ryan dancing emoticon"
+                },
+                
                 # 사용자 입력
                 {
                     "role": "user",
@@ -101,13 +112,11 @@ def generate_image(prompt):
     # payload 에는 프롬프트와 옵션을 같이 넣음
     payload = {
         "prompt": prompt,
-        "steps": 20
+        "steps": 50
     }
     
     response = requests.post(url=f'{STABLE_DIFFUSION_API_URL}/sdapi/v1/txt2img', json=payload)
-    
     response_json = response.json()
-        
     image_data = Image.open(io.BytesIO(base64.b64decode(response_json['images'][0])))
     
     # 현재 날짜와 시간으로 파일 이름 해시 생성
@@ -150,6 +159,19 @@ def create_folder_for_today(base_dir):
         os.makedirs(folder_path)
     
     return folder_path
+
+def set_sd_options():
+    # stable diffusion 설정하는 메서드
+    
+    # option 을 설정할 내용물
+    payload = {
+        "sd_model_checkpoint": "waifu diffusion model.ckpt [e8f4b2225b]"
+    }
+    
+    response = requests.post(url=f'{STABLE_DIFFUSION_API_URL}/sdapi/v1/options', json=payload)
+    
+    if(response != None ):
+        print("에러 발생")
 
 if __name__ == '__main__':
     app.run(debug=True)
